@@ -231,6 +231,11 @@
   white-space: nowrap;
 }
 .p-table tbody th { font-weight: 600; min-width: 0; white-space: nowrap; }
+.p-table tr > :first-child { min-width: 0; }
+@media (max-width: 720px) {
+  .p-table th, .p-table td { padding: var(--space-3); min-width: 160px; }
+  .p-table tr > :first-child { min-width: 0; }
+}
 .p-table tbody tr:last-child > * { border-bottom: 0; }
 
 /* Сравнение корзин */

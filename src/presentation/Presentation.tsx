@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Icon } from '../components/Icon'
 import { LogoMark } from '../components/Logo'
 import { Segmented } from '../components/shop'
+import { SCENARIO_SLOT_ID } from '../components/ScenarioSwitcher'
 import { Brief } from './Brief'
 
 type Tab = 'brief' | 'prototype'
@@ -90,22 +91,23 @@ export function Presentation() {
 
       {protoMounted && (
         <section className={`p-stage p-stage--${device}`} hidden={tab !== 'prototype'} aria-label="Прототип">
-          <Segmented<Device>
-            className="r-seg--bar r-seg--device"
-            label="Размер экрана"
-            value={device}
-            onChange={setDevice}
-            options={[
-              { id: 'phone', title: 'Телефон' },
-              { id: 'desktop', title: 'Компьютер' },
-            ]}
-          />
+          <div className="p-stage__bar">
+            <Segmented<Device>
+              className="r-seg--bar r-seg--device"
+              label="Размер экрана"
+              value={device}
+              onChange={setDevice}
+              options={[
+                { id: 'phone', title: 'Телефон' },
+                { id: 'desktop', title: 'Компьютер' },
+              ]}
+            />
+            {/* Сюда прототип переносит меню «Сценарий» */}
+            <div id={SCENARIO_SLOT_ID} className="p-stage__slot" />
+          </div>
           <div className="p-stage__frame">
             <iframe key={proto.key} src={src} title="Прототип оформления заказа" onLoad={(e) => focusCourier(e.currentTarget, proto.path)} />
           </div>
-          <p className="p-stage__hint">
-            Сценарии A–E переключаются панелью «Сценарий» в левом нижнем углу прототипа
-          </p>
         </section>
       )}
     </div>

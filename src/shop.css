@@ -1464,6 +1464,29 @@
 .r-proto__item--reset { color: var(--color-text-secondary); }
 .r-proto__item--reset .r-proto__label { color: var(--color-text); }
 
+/* В панели презентации, рядом с «Телефон / Компьютер»: та же высота, меню вниз */
+.r-proto--docked { position: relative; left: auto; bottom: auto; }
+.r-proto--docked .r-proto__toggle {
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  box-shadow: none;
+}
+.r-proto--docked .r-proto__current { color: var(--color-text-secondary); }
+.r-proto--docked .r-proto__menu {
+  top: calc(100% + var(--space-2));
+  bottom: auto;
+  transform-origin: top left;
+  animation-name: r-pop-down;
+}
+@keyframes r-pop-down {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .r-proto--docked .r-proto__toggle:hover { background: var(--gray-150); }
+}
+
 @media (max-width: 959px) {
   .r-proto { left: var(--space-3); bottom: calc(88px + env(safe-area-inset-bottom)); }
   .r-proto__toggle { height: 32px; padding: 0 var(--space-3); font-size: var(--text-xs); }

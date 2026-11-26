@@ -66,11 +66,23 @@ export function HeroPreview() {
           <div className="r-couriers__col">{card('smart', 'bulb', sc.services, true)}</div>
           <div className="r-couriers__col">{card('beauty', 'gift', BEAUTY_SERVICES)}</div>
         </div>
-        <p className="r-status" role="status">
-          <Icon name="circle-check" size={16} />
-          Отлично, {picked === 'smart' ? sc.confirm : BEAUTY_CONFIRM}
-        </p>
-        {picked === 'beauty' && <p className="r-hint">{sc.hint}</p>}
+        {/* Невидимый двойник самого высокого исхода держит высоту: текст слева от блока не прыгает */}
+        <div className="p-swap">
+          <div className="r-stack-12">
+            <p className="r-status" role="status">
+              <Icon name="circle-check" size={16} />
+              Отлично, {picked === 'smart' ? sc.confirm : BEAUTY_CONFIRM}
+            </p>
+            {picked === 'beauty' && <p className="r-hint">{sc.hint}</p>}
+          </div>
+          <div className="r-stack-12 p-swap__ghost" aria-hidden="true">
+            <p className="r-status">
+              <Icon name="circle-check" size={16} />
+              Отлично, {sc.confirm.length > BEAUTY_CONFIRM.length ? sc.confirm : BEAUTY_CONFIRM}
+            </p>
+            <p className="r-hint">{sc.hint}</p>
+          </div>
+        </div>
       </div>
     </Section>
   )

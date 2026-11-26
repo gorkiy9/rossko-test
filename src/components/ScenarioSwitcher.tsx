@@ -1,9 +1,37 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { PRESETS, SCREEN_TITLES } from '../scenarios'
 import { useStore } from '../store'
 import type { ScreenId } from '../store'
 import { Icon } from './Icon'
+
+/** id места в презентации рядом с переключателем «Телефон / Компьютер» */
+export const SCENARIO_SLOT_ID = 'proto-scenario-slot'
+
+/**
+ * Прототип открыт внутри презентации на широком экране — меню переезжает
+ * в её панель над рамкой. Отдельно и на телефоне остаётся плавающей кнопкой.
+ */
+function useDockSlot(): HTMLElement | null {
+  const [slot, setSlot] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    let host: Window
+    try {
+      if (window.parent === window) return
+      host = window.parent
+      void host.document // другой источник — бросит
+    } catch {
+      return
+    }
+    const wide = host.matchMedia('(min-width: 960px)')
+    const sync = () => setSlot(wide.matches ? host.document.getElementById(SCENARIO_SLOT_ID) : null)
+    sync()
+    wide.addEventListener('change', sync)
+    return () => wide.removeEventListener('change', sync)
+  }, [])
+  return slot
+}
 
 /**
  * Служебное меню прототипа. На каждом экране — только его сценарии,
@@ -15,6 +43,7 @@ export function ScenarioSwitcher({ screen, onApply }: { screen: ScreenId; onAppl
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
+  const slot = useDockSlot()
 
   const presets = PRESETS[screen]
   const active = presets.find((p) => p.match(state))
@@ -30,21 +59,27 @@ export function ScenarioSwitcher({ screen, onApply }: { screen: ScreenId; onAppl
         toggleRef.current?.focus()
       }
     }
-    document.addEventListener('pointerdown', onDown)
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('pointerdown', onDown)
-      document.removeEventListener('keydown', onKey)
+    // В доке меню в документе презентации, а клик «мимо» может прийти и из прототипа
+    const docs = slot ? [document, slot.ownerDocument] : [document]
+    for (const d of docs) {
+      d.addEventListener('pointerdown', onDown)
+      d.addEventListener('keydown', onKey)
     }
-  }, [open])
+    return () => {
+      for (const d of docs) {
+        d.removeEventListener('pointerdown', onDown)
+        d.removeEventListener('keydown', onKey)
+      }
+    }
+  }, [open, slot])
 
   const close = () => {
     setOpen(false)
     toggleRef.current?.focus()
   }
 
-  return (
-    <div ref={rootRef} className="r-proto">
+  const ui = (
+    <div ref={rootRef} className={slot ? 'r-proto r-proto--docked' : 'r-proto'}>
       {open && (
         <div className="r-proto__menu" role="menu" aria-label={SCREEN_TITLES[screen]}>
           <span className="r-proto__head" aria-hidden="true">
@@ -107,4 +142,6 @@ export function ScenarioSwitcher({ screen, onApply }: { screen: ScreenId; onAppl
       </button>
     </div>
   )
+
+  return slot ? createPortal(ui, slot) : ui
 }

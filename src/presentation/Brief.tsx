@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { COURIERS as COURIER_DATA, fmt } from '../data'
 import { Icon } from '../components/Icon'
 import type { IconName } from '../components/Icon'
+import { HeroPreview } from './HeroPreview'
 
 /** Текст тестового задания. Источник — документ «Выбор курьера при оформлении заказа — правила, гипотезы, сценарий» */
 
@@ -19,6 +21,29 @@ type SectionId = (typeof SECTIONS)[number]['id']
 
 export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
   return (
+    <>
+      <header className="p-hero">
+        <div className="p-hero__text">
+          <span className="p-hero__meta">Тестовое задание · 25 ноября 2026</span>
+          <h1 className="p-hero__title">Выбор курьера при оформлении заказа</h1>
+          <p className="p-hero__lead">
+            Клиенты чаще выбирают красивого курьера, бизнесу выгоднее умный. Решение — показать пользу умного для
+            конкретного заказа, а не ограничивать выбор.
+          </p>
+          <div className="p-hero__actions">
+            <button type="button" className="r-btn r-btn--md r-btn--primary" onClick={() => onOpen('#/checkout?s=A')}>
+              Открыть прототип
+            </button>
+            <button type="button" className="r-btn r-btn--md r-btn--soft" onClick={() => scrollToSection('scenario')}>
+              Перейти к сценарию
+            </button>
+          </div>
+        </div>
+        <div className="p-hero__visual">
+          <HeroPreview />
+        </div>
+      </header>
+
     <div className="p-doc">
       <nav className="p-toc" aria-label="Содержание">
         <span className="p-toc__label">Содержание</span>
@@ -34,22 +59,6 @@ export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
       </nav>
 
       <article className="p-doc__body">
-        <header className="p-hero">
-          <span className="r-pill">Тестовое задание · 25 ноября 2026</span>
-          <h1 className="p-hero__title">Выбор курьера при оформлении заказа</h1>
-          <p className="p-hero__lead">
-            Клиенты чаще выбирают красивого курьера, бизнесу выгоднее умный. Решение — показать пользу умного для
-            конкретного заказа, а не ограничивать выбор.
-          </p>
-          <div className="p-hero__actions">
-            <button type="button" className="r-btn r-btn--md r-btn--primary" onClick={() => onOpen('#/checkout?s=A')}>
-              Открыть прототип
-            </button>
-            <button type="button" className="r-btn r-btn--md r-btn--soft" onClick={() => scrollToSection('scenario')}>
-              Сценарий
-            </button>
-          </div>
-        </header>
 
         <Section id="context">
           <p>
@@ -289,16 +298,16 @@ export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
                     <Icon name={c.icon} size={24} />
                   </span>
                   <span className="r-courier__who">
-                    <span className="r-courier__title">{c.title}</span>
+                    <span className="r-courier__title">{COURIER_DATA[c.id].title}</span>
                     <span className="r-courier__meta">
                       <Icon name="star" size={16} filled color="var(--color-star)" />
-                      {c.rating}
+                      {COURIER_DATA[c.id].rating}
                     </span>
                   </span>
                 </span>
                 <span className="r-hint">{c.benefit}</span>
-                <span className={c.price === 0 ? 'r-courier__price is-free' : 'r-courier__price'}>
-                  {c.price === 0 ? 'Бесплатно' : `${c.price} ₽`}
+                <span className={COURIER_DATA[c.id].fee ? 'r-courier__price' : 'r-courier__price is-free'}>
+                  {COURIER_DATA[c.id].fee ? '+' + fmt(COURIER_DATA[c.id].fee) : 'Бесплатно'}
                 </span>
               </div>
             ))}
@@ -377,6 +386,7 @@ export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
         </footer>
       </article>
     </div>
+    </>
   )
 }
 
@@ -390,10 +400,10 @@ const STATES = [
   { id: 'E', title: 'Выбран красивый в сложной корзине', when: 'Пользователь снял предвыбор', sees: 'Одна строка без давления: «С настройкой поможет инструкция в коробке», без модалки' },
 ]
 
-const COURIERS: { id: 'smart' | 'beauty' | 'both'; icon: IconName; title: string; price: number; rating: string; benefit: string }[] = [
-  { id: 'smart', icon: 'bulb', title: 'Умный', price: 0, rating: '4,9', benefit: 'Проверит товар при вас, ответит на вопросы, сразу оформит возврат' },
-  { id: 'beauty', icon: 'gift', title: 'Красивый', price: 199, rating: '4,8', benefit: 'Приятная встреча, подарочная упаковка, фото на память' },
-  { id: 'both', icon: 'star', title: 'Красивый и умный', price: 499, rating: '5,0', benefit: 'Всё сразу, доступно не на все слоты' },
+const COURIERS: { id: 'smart' | 'beauty' | 'both'; icon: IconName; benefit: string }[] = [
+  { id: 'smart', icon: 'bulb', benefit: 'Проверит товар при вас, ответит на вопросы, сразу оформит возврат' },
+  { id: 'beauty', icon: 'gift', benefit: 'Приятная встреча, подарочная упаковка, фото на память' },
+  { id: 'both', icon: 'star', benefit: 'Всё сразу, доступно не на все слоты' },
 ]
 
 const FLOW = ['Корзина', 'Адрес', 'Дата и слот', 'Выбор курьера', 'Оплата', 'Трекинг', 'Оценка']

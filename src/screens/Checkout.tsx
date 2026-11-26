@@ -383,9 +383,11 @@ function CourierChoice() {
         </span>
         <span className="r-courier__who">
           <span className="r-courier__title">{COURIERS.both.title}</span>
-          <span className="r-courier__meta">
-            {COURIERS.both.name} · <Icon name="star" size={16} filled color="var(--color-star)" /> {COURIERS.both.rating} · всё
-            сразу, не на все слоты
+          <span className="r-courier__meta r-courier__meta--text">
+            <span className="r-courier__rating">
+              {COURIERS.both.name} · <Icon name="star" size={16} filled color="var(--color-star)" /> {COURIERS.both.rating}
+            </span>{' '}
+            · всё сразу, не на все слоты
           </span>
         </span>
         <span className="r-courier__price">+{fmt(COURIERS.both.fee)}</span>

@@ -905,6 +905,9 @@
 .r-courier__who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
 .r-courier__title { font-size: var(--text-lg); font-weight: 600; line-height: var(--leading-tight); letter-spacing: -0.01em; }
 .r-courier__meta { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: var(--text-sm); color: var(--color-text-secondary); }
+/* Мета с описанием (премиум): обычный текст, рейтинг со звездой не разрывается при переносе */
+.r-courier__meta--text { display: block; }
+.r-courier__rating { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; vertical-align: top; }
 .r-courier__reco { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
 .r-courier__reason { font-size: var(--text-sm); }
 .r-courier__price { margin-top: auto; font-weight: 600; }

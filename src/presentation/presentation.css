@@ -103,8 +103,9 @@
   text-decoration: none;
   transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
 }
+.p-toc a[aria-current='location'] { background: var(--color-accent-soft); color: var(--color-accent); }
 @media (hover: hover) and (pointer: fine) {
-  .p-toc a:hover { background: var(--color-surface-hover); color: var(--color-text); }
+  .p-toc a:not([aria-current]):hover { background: var(--color-surface-hover); color: var(--color-text); }
 }
 
 .p-doc__body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }

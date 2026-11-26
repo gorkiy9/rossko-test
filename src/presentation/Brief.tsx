@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { COURIERS as COURIER_DATA, fmt } from '../data'
 import { Icon } from '../components/Icon'
@@ -19,7 +20,68 @@ const SECTIONS = [
 
 type SectionId = (typeof SECTIONS)[number]['id']
 
+/**
+ * Раздел, который сейчас читают: последний, чей верх поднялся выше трети экрана.
+ * У самого низа страницы — последний раздел, даже если он короткий и не дотянулся до этой линии.
+ * После клика по оглавлению подсветка сразу встаёт на выбранный пункт и не пробегает
+ * по промежуточным, пока идёт плавная прокрутка.
+ */
+function useActiveSection() {
+  const [active, setActive] = useState<SectionId | null>(null)
+  const locked = useRef<number | null>(null)
+
+  useEffect(() => {
+    let frame = 0
+    const measure = () => {
+      frame = 0
+      if (locked.current !== null) return
+      const line = window.innerHeight / 3
+      let current: SectionId | null = null
+      for (const s of SECTIONS) {
+        const el = document.getElementById(s.id)
+        if (!el || !el.offsetParent) continue
+        if (el.getBoundingClientRect().top <= line) current = s.id
+      }
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      if (atBottom && current) current = SECTIONS[SECTIONS.length - 1].id
+      setActive(current)
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(measure)
+    }
+    const unlock = () => {
+      if (locked.current === null) return
+      clearTimeout(locked.current)
+      locked.current = null
+      onScroll()
+    }
+    measure()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    window.addEventListener('scrollend', unlock)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('scrollend', unlock)
+    }
+  }, [])
+
+  const pick = useCallback((id: SectionId) => {
+    setActive(id)
+    if (locked.current !== null) clearTimeout(locked.current)
+    // Запас на браузеры без scrollend
+    locked.current = window.setTimeout(() => {
+      locked.current = null
+      window.dispatchEvent(new Event('scroll'))
+    }, 1200)
+  }, [])
+
+  return [active, pick] as const
+}
+
 export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
+  const [active, pick] = useActiveSection()
   return (
     <>
       <header className="p-hero">
@@ -50,7 +112,15 @@ export function Brief({ onOpen }: { onOpen: (path: string) => void }) {
         <ol>
           {SECTIONS.map((s) => (
             <li key={s.id}>
-              <a href={`#${s.id}`} onClick={(e) => (e.preventDefault(), scrollToSection(s.id))}>
+              <a
+                href={`#${s.id}`}
+                aria-current={active === s.id ? 'location' : undefined}
+                onClick={(e) => {
+                  e.preventDefault()
+                  pick(s.id)
+                  scrollToSection(s.id)
+                }}
+              >
                 {s.title}
               </a>
             </li>

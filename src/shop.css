@@ -1090,7 +1090,6 @@
   .r-pay__title { grid-area: title; }
   .r-pay__caption { grid-area: caption; }
 
-  .r-courier--row .r-courier__meta { display: none; }
   .r-mbar .r-btn { min-width: 0; flex: 0 1 200px; }
   .r-total__value { font-size: var(--text-lg); letter-spacing: -0.01em; }
 }

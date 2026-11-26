@@ -6,6 +6,8 @@
 
 .p-app {
   --bar-h: 64px;
+  --doc-toc: 220px;
+  --doc-text: 800px;
   min-height: 100dvh;
   background: var(--color-bg);
 }
@@ -72,7 +74,7 @@
   margin: 0 auto;
   padding: var(--space-4) var(--space-6) var(--space-10);
   display: grid;
-  grid-template-columns: 220px minmax(0, 800px);
+  grid-template-columns: var(--doc-toc) minmax(0, var(--doc-text));
   justify-content: center;
   gap: var(--space-8);
   align-items: start;
@@ -108,7 +110,8 @@
 .p-doc__body { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
 
 .p-hero {
-  max-width: var(--container);
+  /* Те же края, что у оглавления и текста ниже */
+  max-width: calc(var(--doc-toc) + var(--doc-text) + var(--space-8) + 2 * var(--space-6));
   margin: 0 auto;
   padding: var(--space-10) var(--space-6);
   display: grid;
@@ -359,9 +362,9 @@
 
 /* ───────── Планшет и телефон ───────── */
 @media (max-width: 1080px) {
-  .p-doc { grid-template-columns: minmax(0, 800px); }
+  .p-doc { grid-template-columns: minmax(0, var(--doc-text)); }
   .p-toc { display: none; }
-  .p-hero { grid-template-columns: minmax(0, 800px); justify-content: center; gap: var(--space-8); }
+  .p-hero { grid-template-columns: minmax(0, var(--doc-text)); justify-content: center; gap: var(--space-8); }
 }
 
 @media (max-width: 959px) {

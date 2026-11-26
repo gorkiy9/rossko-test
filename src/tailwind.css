@@ -1,0 +1,42 @@
+/*
+ * Tailwind v4 только для компонентов BoardUI в src/components/ui.
+ * Без preflight: экраны на обычном CSS (app.css) не меняются.
+ * Цвета и радиусы — ссылки на токены из index.css, своих значений здесь нет.
+ * Имена --muted и --accent в проекте уже заняты (цвет текста и синий акцент),
+ * поэтому роли (primary, muted-foreground…) сопоставлены с токенами только внутри @theme.
+ */
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+/* Сканируем только компоненты BoardUI, чтобы классы экранов (row-12, mt-4…) не превращались в утилиты */
+@source './components/ui';
+
+@theme inline {
+  --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --color-card: var(--bg);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--bg);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
+  --color-primary-foreground: #fff;
+  --color-secondary: var(--surface);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--surface);
+  --color-muted-foreground: var(--muted);
+  --color-accent: var(--accent-soft);
+  --color-accent-foreground: var(--accent-hover);
+  --color-destructive: #b42318;
+  --color-success: var(--success);
+  --color-border: var(--line-2);
+  --color-input: var(--line-2);
+  --color-ring: var(--accent);
+
+  /* Радиусы из токенов src/index.css: поле и чип 12, карточка 16, панель 20 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}

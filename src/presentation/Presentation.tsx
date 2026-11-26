@@ -76,18 +76,6 @@ export function Presentation() {
             ]}
           />
           <div className="p-bar__end">
-            {tab === 'prototype' && (
-              <Segmented<Device>
-                className="r-seg--bar r-seg--device"
-                label="Размер экрана"
-                value={device}
-                onChange={setDevice}
-                options={[
-                  { id: 'phone', title: 'Телефон' },
-                  { id: 'desktop', title: 'Компьютер' },
-                ]}
-              />
-            )}
             <a className="r-btn r-btn--sm r-btn--soft p-bar__open" href={src} target="_blank" rel="noreferrer">
               Открыть отдельно
               <Icon name="chevron-right" size={16} />
@@ -102,6 +90,16 @@ export function Presentation() {
 
       {protoMounted && (
         <section className={`p-stage p-stage--${device}`} hidden={tab !== 'prototype'} aria-label="Прототип">
+          <Segmented<Device>
+            className="r-seg--bar r-seg--device"
+            label="Размер экрана"
+            value={device}
+            onChange={setDevice}
+            options={[
+              { id: 'phone', title: 'Телефон' },
+              { id: 'desktop', title: 'Компьютер' },
+            ]}
+          />
           <div className="p-stage__frame">
             <iframe key={proto.key} src={src} title="Прототип оформления заказа" />
           </div>

@@ -57,7 +57,7 @@
 /* Сегменты в шапке: без нижнего отступа, по ширине подписей */
 .r-seg--bar { margin: 0; min-width: 240px; }
 .r-seg--bar .r-seg__item { padding: 6px var(--space-4); font-size: var(--text-sm); white-space: nowrap; }
-.r-seg--device { min-width: 200px; }
+.r-seg--device { min-width: 200px; flex-shrink: 0; }
 .r-seg__item:focus-visible { outline-offset: -2px; }
 .r-seg__item { transition: transform var(--dur-fast) var(--ease-out); }
 .r-seg__item:active { transform: scale(0.97); }
@@ -335,7 +335,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-5) var(--space-5) var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-3);
 }
 .p-stage__frame {
   flex: 1;

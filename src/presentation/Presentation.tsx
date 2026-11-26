@@ -101,7 +101,7 @@ export function Presentation() {
             ]}
           />
           <div className="p-stage__frame">
-            <iframe key={proto.key} src={src} title="Прототип оформления заказа" />
+            <iframe key={proto.key} src={src} title="Прототип оформления заказа" onLoad={(e) => focusCourier(e.currentTarget, proto.path)} />
           </div>
           <p className="p-stage__hint">
             Сценарии A–E переключаются панелью «Сценарий» в левом нижнем углу прототипа
@@ -110,4 +110,16 @@ export function Presentation() {
       )}
     </div>
   )
+}
+
+/** Состояния A–E — про блок «Кто привезёт заказ»: сразу показываем его, а не начало оформления */
+function focusCourier(frame: HTMLIFrameElement, path: string) {
+  if (!path.startsWith('#/checkout')) return
+  let tries = 0
+  const tick = () => {
+    const el = frame.contentDocument?.getElementById('courier')
+    if (el) el.scrollIntoView({ block: 'start' })
+    else if (tries++ < 30) requestAnimationFrame(tick)
+  }
+  tick()
 }
